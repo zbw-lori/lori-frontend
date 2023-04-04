@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="ma-auto pa-10" color="accent">
+  <v-sheet class="pa-10" color="accent" style="max-width: 680px">
     <v-img class="mx-auto mb-16" width="90" src="@/assets/logo.svg" />
 
     <v-sheet class="mx-auto" color="transparent" style="max-width: 360px">
