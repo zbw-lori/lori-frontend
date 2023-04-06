@@ -16,6 +16,17 @@ const routes = [
       },
     ],
   },
+  {
+    path: '/dashboard ',
+    component: () => import('@/layouts/default/Navigation.vue'),
+    children: [
+      {
+        path: '/dashboard',
+        name: 'Dashboard',
+        component: () => import('@/views/Dashboard.vue'),
+      },
+    ],
+  },
 ]
 
 const router = createRouter({
