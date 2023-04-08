@@ -17,5 +17,5 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: 16.14.x
-    - name: Build with yarn
-      run: yarn build
+    - name: Build with npm
+      run: npm run build
