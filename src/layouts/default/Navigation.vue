@@ -1,13 +1,11 @@
 <template>
   <v-app class="app">
     <v-navigation-drawer color="transparent" floating permanent class="pt-10 pl-10">
+      <v-img class="mb-10" width="70" src="@/assets/logo.svg" />
       <v-list density="compact" nav class="pa-0" active-color="primary" variant="flat">
-        <v-list-item class="pt-0" style="background-color: transparent"><v-img class="mb-5" width="70"
-            src="@/assets/logo.svg" /></v-list-item>
-        <v-list-item prepend-icon="mdi-view-dashboard" title="Dashboard" value="dashboard"></v-list-item>
-        <v-list-item prepend-icon="mdi-robot" title="Robots" value="robots"></v-list-item>
-        <v-list-item prepend-icon="mdi-file-tree" title="Stock Management" value="stock"></v-list-item>
-        <v-list-item prepend-icon="mdi-account-group" title="Customer Status" value="status"></v-list-item>
+        <v-list-item v-for="link in links" :key="link.text" :to="link.route" :prepend-icon="link.icon">
+          <v-list-item-title>{{ link.text }}</v-list-item-title>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
@@ -17,7 +15,19 @@
   </v-app>
 </template>
 
-<script setup>
+<script>
+export default {
+  data() {
+    return {
+      links: [
+        { icon: 'mdi-view-dashboard', text: 'Dashboard', route: '/dashboard' },
+        { icon: 'mdi-robot', text: 'Robots', route: '/robots' },
+        { icon: 'mdi-file-tree', text: 'Stock Management', route: '/stock' },
+        { icon: 'mdi-account-group', text: 'Customer Status', route: '/status' }
+      ]
+    }
+  }
+}
 </script>
 
 <style scoped>
