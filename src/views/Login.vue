@@ -5,11 +5,7 @@
         <login-form />
       </v-col>
       <v-col>
-        <v-img
-          class="mx-auto mb-16"
-          width="50vh"
-          src="@/assets/login-amico.svg"
-        />
+        <v-img class="mx-auto" width="50vh" src="@/assets/login-amico.svg" />
       </v-col>
     </v-row>
   </v-container>

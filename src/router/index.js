@@ -16,6 +16,50 @@ const routes = [
       },
     ],
   },
+  {
+    path: '/dashboard ',
+    component: () => import('@/layouts/default/Navigation.vue'),
+    children: [
+      {
+        path: '/dashboard',
+        name: 'Dashboard',
+        component: () => import('@/views/Dashboard.vue'),
+      },
+    ],
+  },
+  {
+    path: '/robots ',
+    component: () => import('@/layouts/default/Navigation.vue'),
+    children: [
+      {
+        path: '/robots',
+        name: 'Robots',
+        component: () => import('@/views/Robot.vue'),
+      },
+    ],
+  },
+  {
+    path: '/stock ',
+    component: () => import('@/layouts/default/Navigation.vue'),
+    children: [
+      {
+        path: '/stock',
+        name: 'Stock',
+        component: () => import('@/views/Stock.vue'),
+      },
+    ],
+  },
+  {
+    path: '/status ',
+    component: () => import('@/layouts/default/Navigation.vue'),
+    children: [
+      {
+        path: '/status',
+        name: 'Status',
+        component: () => import('@/views/Status.vue'),
+      },
+    ],
+  },
 ]
 
 const router = createRouter({
