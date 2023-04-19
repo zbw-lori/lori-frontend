@@ -31,7 +31,6 @@ export default {
         "password": this.password
       }
       console.log(user)
-
       var response = await fetch("http://localhost:57679/api/v1/Auth/login", {
         method: "POST",
         headers: {
@@ -45,6 +44,7 @@ export default {
       console.log(json)
       if (response.status == 200) {
         localStorage.setItem("jwt", json);
+        this.$router.push('/dashboard')
       }
 
       this.email = ""
