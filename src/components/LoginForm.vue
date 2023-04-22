@@ -13,7 +13,8 @@
         <v-btn block prepend-icon="mdi-lock" size="x-large" color="primary" type="submit">Login</v-btn>
       </v-form>
 
-      <v-btn block size="small" variant="text" color="primary" class="mt-5">Forgot Password?</v-btn>
+      <v-btn block size="small" variant="text" color="primary" class="my-5">Forgot Password?</v-btn>
+      <v-btn block prepend-icon="mdi-account" size="x-large" color="tertiary" @click="register">Register</v-btn>
     </v-sheet>
   </v-sheet>
 </template>
@@ -75,6 +76,32 @@ export default {
         if (response.status == 200) {
           this.$router.push('/dashboard')
         }
+      }
+    },
+
+    async register() {
+      this.valid = true;
+      var user = {
+        "username": this.email,
+        "password": this.password
+      }
+      console.log(user)
+      var response = await fetch("http://localhost:57679/api/v1/Auth/register", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user)
+      });
+
+      var json = await response.json();
+      console.log(json)
+      if (response.status == 200) {
+        await this.login();
+      } else {
+        this.valid = false
+        await this.$refs.form.validate()
       }
     }
   },
