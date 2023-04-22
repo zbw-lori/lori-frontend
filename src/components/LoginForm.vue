@@ -58,7 +58,28 @@ export default {
         this.valid = false
         await this.$refs.form.validate()
       }
+    },
+
+    async getMe() {
+      var token = localStorage.getItem("jwt");
+      console.log("Calling getMe()..." + token)
+      if (token) {
+        var response = await fetch("http://localhost:57679/api/v1/Auth", {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (response.status == 200) {
+          this.$router.push('/dashboard')
+        }
+      }
     }
+  },
+  async created() {
+    await this.getMe()
   }
 };
 </script>
