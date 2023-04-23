@@ -1,8 +1,12 @@
-# syntax=docker/dockerfile:1
-   
-FROM node:18-alpine
-WORKDIR /app
+FROM node:19-alpine AS build
+WORKDIR /build
 COPY . .
-RUN yarn install --production
-CMD ["node", "src/index.js"]
-EXPOSE 3000
+RUN yarn
+RUN yarn build
+
+FROM node:19-alpine
+WORKDIR /app
+COPY --from=build /build/dist .
+RUN npm install --global serve
+CMD ["serve", "-l", "80", "-s", "/app"]
+EXPOSE 80
