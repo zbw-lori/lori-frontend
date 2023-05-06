@@ -63,10 +63,11 @@
                     sm="6"
                     md="4"
                   >
-                    <v-text-field
+                    <v-select
                       v-model="editedItem.priority"
                       label="Priority"
-                    ></v-text-field>
+                      :items="prioItems"
+                    ></v-select>
                   </v-col>
                   <v-col
                     cols="12"
@@ -156,6 +157,11 @@
 </template>
 
 <script>
+const prio = {
+  high: 'high',
+  medium: 'medium',
+  low: 'low'
+};
   export default {
     data: () => ({
       dialog: false,
@@ -174,18 +180,19 @@
         { title: 'Actions', key: 'actions', sortable: false },
       ],
       orders: [],
+      prioItems: Object.values(prio),
       editedIndex: -1,
       editedItem: {
         id: 0,
         status: '',
-        priority: '',
+        priority: null,
         created: '',
         type: 'auto',
       },
       defaultItem: {
         id: 0,
         status: '',
-        priority: '',
+        priority: null,
         created: '',
         type: 'auto',
       },
@@ -216,35 +223,35 @@
           {
             id: 1,
             status: 'pickup',
-            priority: 'low',
+            priority: prio.low,
             created: '2023-04-11',
             type: 'auto',
           },
           {
             id: 2,
             status: 'done',
-            priority: 'high',
+            priority: prio.high,
             created: '2023-04-12',
             type: 'auto',
           },
           {
             id: 3,
             status: 'moving',
-            priority: 'medium',
+            priority: prio.medium,
             created: '2023-04-15',
             type: 'manual',
           },
           {
             id: 4,
             status: 'waiting',
-            priority: 'low',
+            priority: prio.low,
             created: '2023-04-12',
             type: 'auto',
           },
           {
             id: 5,
             status: 'moving',
-            priority: 'medium',
+            priority: prio.medium,
             created: '2023-04-23',
             type: 'manual',
           },
@@ -252,8 +259,8 @@
       },
 
       getColor (priority) {
-        if (priority == 'high') return 'red'
-        else if (priority == 'medium') return 'orange'
+        if (priority == prio.high) return 'red'
+        else if (priority == prio.medium) return 'orange'
         else return 'green'
       },
 
