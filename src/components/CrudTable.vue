@@ -1,117 +1,11 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="orders"
-    :sort-by="[{ key: 'id', order: 'asc' }]"
-    class="elevation-1"
-  >
+  <v-data-table :items-per-page="itemsPerPage" :headers="headers" :items-length="totalItems" :items="items"
+    :sort-by="[{ key: 'id', order: 'asc' }]" class="elevation-1">
     <template v-slot:top>
-      <v-toolbar
-        flat
-      >
+      <v-toolbar flat>
         <v-toolbar-title>CRUD</v-toolbar-title>
-        <v-divider
-          class="mx-4"
-          inset
-          vertical
-        ></v-divider>
         <v-spacer></v-spacer>
-        <v-dialog
-          v-model="dialog"
-          max-width="500px"
-        >
-          <template v-slot:activator="{ props }">
-            <v-btn
-              color="primary"
-              dark
-              class="mb-2"
-              v-bind="props"
-            >
-              New Item
-            </v-btn>
-          </template>
-          <v-card>
-            <v-card-title>
-              <span class="text-h5">{{ formTitle }}</span>
-            </v-card-title>
-
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.id"
-                      label="Order Id"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.status"
-                      label="Status"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-select
-                      v-model="editedItem.priority"
-                      label="Priority"
-                      :items="prioItems"
-                    ></v-select>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.created"
-                      label="Created"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.type"
-                      label="Type"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="blue-darken-1"
-                variant="text"
-                @click="close"
-              >
-                Cancel
-              </v-btn>
-              <v-btn
-                color="blue-darken-1"
-                variant="text"
-                @click="save"
-              >
-                Save
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+        <EditDialog v-model:item-object="editedItem" v-model:showDialog="dialog" @onSave="save" @onCancel="close" />
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
             <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
@@ -125,186 +19,134 @@
         </v-dialog>
       </v-toolbar>
     </template>
-    <template v-slot:item.priority="{ item }">
-      <v-chip :color="getColor(item.raw.priority)">
-        {{ item.raw.priority }}
-      </v-chip>
-    </template>
     <template v-slot:item.actions="{ item }">
-      <v-icon
-        size="small"
-        class="me-2"
-        @click="editItem(item.raw)"
-      >
-        mdi-pencil
-      </v-icon>
-      <v-icon
-        size="small"
-        @click="deleteItem(item.raw)"
-      >
-        mdi-delete
-      </v-icon>
+      <v-icon size="small" class="me-2" @click="editItem(item.raw)">mdi-pencil</v-icon>
+      <v-icon size="small" @click="deleteItem(item.raw)">mdi-delete</v-icon>
     </template>
     <template v-slot:no-data>
-      <v-btn
-        color="primary"
-        @click="initialize"
-      >
-        Reset
-      </v-btn>
+      <v-btn color="primary" @click="initialize">Reset</v-btn>
     </template>
   </v-data-table>
 </template>
 
 <script>
-const prio = {
-  high: 'high',
-  medium: 'medium',
-  low: 'low'
-};
-  export default {
-    data: () => ({
-      dialog: false,
-      dialogDelete: false,
-      headers: [
-        {
-          title: 'Order',
-          align: 'start',
-          sortable: false,
-          key: 'id',
-        },
-        { title: 'Status', key: 'status' },
-        { title: 'Priority', key: 'priority' },
-        { title: 'Created', key: 'created' },
-        { title: 'Type', key: 'type' },
-        { title: 'Actions', key: 'actions', sortable: false },
-      ],
-      orders: [],
-      prioItems: Object.values(prio),
-      editedIndex: -1,
-      editedItem: {
-        id: 0,
-        status: '',
-        priority: null,
-        created: '',
-        type: 'auto',
-      },
-      defaultItem: {
-        id: 0,
-        status: '',
-        priority: null,
-        created: '',
-        type: 'auto',
-      },
-    }),
+import EditDialog from '@/components/EditDialog.vue';
+import { toRaw } from 'vue';
 
-    computed: {
-      formTitle () {
-        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+export default {
+  components: {
+    EditDialog
+  },
+
+  props: {
+    headers: Array,
+    defaultItem: Object,
+    dataItems: Array,
+  },
+
+  emit: ['update:dataItems'],
+
+  data: () => ({
+    dialog: false,
+    dialogDelete: false,
+    itemsPerPage: 5,
+    totalItems: 0,
+    editedIndex: -1,
+    editedItem: null,
+  }),
+
+  computed: {
+    items: {
+      get() {
+        return this.dataItems;
       },
+      set(value) {
+        this.$emit('update:dataItems', value);
+      },
+    }
+  },
+
+  watch: {
+    dialog(val) {
+      val || this.close()
+    },
+    dialogDelete(val) {
+      val || this.closeDelete()
+    },
+  },
+
+  created() {
+    // this.initialize()
+    this.editedItem = Object.assign({}, this.defaultItem)
+  },
+
+  methods: {
+    // async initialize() {
+    //   this.items = await this.loadItems();
+    // },
+
+    // async loadItems() {
+    //   var response = await fetch('http://localhost:57679/api/v1/Order', {
+    //     method: "GET",
+    //     headers: {
+    //       Accept: "application/json",
+    //       "Content-Type": "application/json",
+    //     },
+    //   });
+
+    //   var json = await response.json();
+    //   console.log(json)
+    //   return json;
+    // },
+
+    // getColor(priority) {
+    //   if (priority == prio.high) return 'red'
+    //   else if (priority == prio.medium) return 'orange'
+    //   else return 'green'
+    // },
+
+    editItem(item) {
+      this.editedIndex = this.items.indexOf(item)
+      this.editedItem = Object.assign({}, item)
+      this.dialog = true
     },
 
-    watch: {
-      dialog (val) {
-        val || this.close()
-      },
-      dialogDelete (val) {
-        val || this.closeDelete()
-      },
+    deleteItem(item) {
+      this.editedIndex = this.items.indexOf(item)
+      this.editedItem = Object.assign({}, item)
+      this.dialogDelete = true
     },
 
-    created () {
-      this.initialize()
+    deleteItemConfirm() {
+      this.items.splice(this.editedIndex, 1)
+      this.closeDelete()
     },
 
-    methods: {
-      initialize () {
-        this.orders = [
-          {
-            id: 1,
-            status: 'pickup',
-            priority: prio.low,
-            created: '2023-04-11',
-            type: 'auto',
-          },
-          {
-            id: 2,
-            status: 'done',
-            priority: prio.high,
-            created: '2023-04-12',
-            type: 'auto',
-          },
-          {
-            id: 3,
-            status: 'moving',
-            priority: prio.medium,
-            created: '2023-04-15',
-            type: 'manual',
-          },
-          {
-            id: 4,
-            status: 'waiting',
-            priority: prio.low,
-            created: '2023-04-12',
-            type: 'auto',
-          },
-          {
-            id: 5,
-            status: 'moving',
-            priority: prio.medium,
-            created: '2023-04-23',
-            type: 'manual',
-          },
-        ]
-      },
-
-      getColor (priority) {
-        if (priority == prio.high) return 'red'
-        else if (priority == prio.medium) return 'orange'
-        else return 'green'
-      },
-
-      editItem (item) {
-        this.editedIndex = this.orders.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialog = true
-      },
-
-      deleteItem (item) {
-        this.editedIndex = this.orders.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialogDelete = true
-      },
-
-      deleteItemConfirm () {
-        this.orders.splice(this.editedIndex, 1)
-        this.closeDelete()
-      },
-
-      close () {
-        this.dialog = false
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        })
-      },
-
-      closeDelete () {
-        this.dialogDelete = false
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        })
-      },
-
-      save () {
-        if (this.editedIndex > -1) {
-          Object.assign(this.orders[this.editedIndex], this.editedItem)
-        } else {
-          this.orders.push(this.editedItem)
-        }
-        this.close()
-      },
+    close() {
+      this.dialog = false
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedIndex = -1
+      })
     },
-  }
+
+    closeDelete() {
+      this.dialogDelete = false
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedIndex = -1
+      })
+    },
+
+    save() {
+      const newItem = toRaw(this.editedItem)
+      if (this.editedIndex > -1) {
+        Object.assign(this.items[this.editedIndex], newItem)
+      } else {
+        this.items.push(newItem)
+      }
+      this.close()
+    },
+  },
+}
 </script>
