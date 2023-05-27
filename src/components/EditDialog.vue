@@ -13,8 +13,8 @@
       <v-card-text>
         <v-container>
           <v-row>
-            <v-col cols="12" sm="6" md="4" v-for="(header, index) in headers" :key="index">
-              <v-text-field :label="header.title"></v-text-field>
+            <v-col cols="12" sm="6" md="4" v-for="(itemKey, index) in Object.keys(item)" :key="index">
+              <v-text-field v-model="item[itemKey]" :label="itemKey"></v-text-field>
             </v-col>
           </v-row>
         </v-container>
@@ -32,19 +32,12 @@
 <script>
 export default {
   props: {
-    headers: Array,
-    showDialog: Boolean
+    showDialog: Boolean,
+    itemObject: Object,
   },
-  emits: ['onCancel', 'onSave', 'update:showDialog'],
+  emits: ['onCancel', 'onSave', 'update:showDialog', 'update:itemObject'],
   data: () => ({
     editedIndex: -1,
-    editedItem: {
-      id: 0,
-      status: '',
-      priority: null,
-      created: '',
-      receiptType: 'auto',
-    },
   }),
 
   computed: {
@@ -57,6 +50,14 @@ export default {
       },
       set(value) {
         this.$emit('update:showDialog', value);
+      },
+    },
+    item: {
+      get() {
+        return this.itemObject;
+      },
+      set(value) {
+        this.$emit('update:itemObject', value);
       },
     },
   },
