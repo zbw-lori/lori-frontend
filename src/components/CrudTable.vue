@@ -44,7 +44,7 @@ export default {
     dataItems: Array,
   },
 
-  emit: ['update:dataItems'],
+  emit: ['update:dataItems', 'onUpdate', 'onNew', 'onDelete'],
 
   data: () => ({
     dialog: false,
@@ -76,35 +76,10 @@ export default {
   },
 
   created() {
-    // this.initialize()
     this.editedItem = Object.assign({}, this.defaultItem)
   },
 
   methods: {
-    // async initialize() {
-    //   this.items = await this.loadItems();
-    // },
-
-    // async loadItems() {
-    //   var response = await fetch('http://localhost:57679/api/v1/Order', {
-    //     method: "GET",
-    //     headers: {
-    //       Accept: "application/json",
-    //       "Content-Type": "application/json",
-    //     },
-    //   });
-
-    //   var json = await response.json();
-    //   console.log(json)
-    //   return json;
-    // },
-
-    // getColor(priority) {
-    //   if (priority == prio.high) return 'red'
-    //   else if (priority == prio.medium) return 'orange'
-    //   else return 'green'
-    // },
-
     editItem(item) {
       this.editedIndex = this.items.indexOf(item)
       this.editedItem = Object.assign({}, item)
@@ -118,7 +93,9 @@ export default {
     },
 
     deleteItemConfirm() {
+      const newItem = toRaw(this.editedItem)
       this.items.splice(this.editedIndex, 1)
+      this.$emit('onDelete', newItem.id)
       this.closeDelete()
     },
 
@@ -142,8 +119,9 @@ export default {
       const newItem = toRaw(this.editedItem)
       if (this.editedIndex > -1) {
         Object.assign(this.items[this.editedIndex], newItem)
+        this.$emit('onUpdate', newItem.id)
       } else {
-        this.items.push(newItem)
+        this.$emit('onNew', newItem)
       }
       this.close()
     },
