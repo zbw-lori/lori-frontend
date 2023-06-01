@@ -40,38 +40,13 @@ export default {
       model: "",
       isAvailable: false,
     },
-    robots: [
-      {
-        id: 1,
-        name: "Robot1",
-        description: "main robot",
-        model: "123-X1",
-        isAvailable: true,
-      },
-      {
-        id: 2,
-        name: "Robot2",
-        description: "sample",
-        model: "X43",
-        isAvailable: false,
-      },
-      {
-        id: 3,
-        name: "Robot3",
-        description: "mocking robot",
-        model: "Mock-123",
-        isAvailable: true,
-      },
-    ],
+    robots: [],
   }),
 
   async created() {
     this.baseApiPath = `http://${config.backend.host}:${config.backend.port}/api/${config.backend.version}`;
     console.log(`Api Path: ${this.baseApiPath}`);
-    var items = await this.onInit();
-    if (items.length > 0) {
-      this.robots = items;
-    }
+    this.robots = await this.onInit();
   },
 
   methods: {
