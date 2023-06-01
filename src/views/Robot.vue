@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import config from "../appsettings.json";
 import CrudTable from '@/components/CrudTable.vue';
 
 export default {
@@ -18,6 +19,7 @@ export default {
     CrudTable
   },
   data: () => ({
+    baseApiPath: "http://localhost:57679/api/v1",
     headers: [
       {
         title: 'Robot',
@@ -64,6 +66,8 @@ export default {
   }),
 
   async created() {
+    this.baseApiPath = `http://${config.backend.host}:${config.backend.port}/api/${config.backend.version}`;
+    console.log(`Api Path: ${this.baseApiPath}`);
     var items = await this.onInit();
     if (items.length > 0) {
       this.robots = items;
@@ -77,7 +81,7 @@ export default {
 
     async onInit() {
       console.log("init robots....")
-      var response = await fetch(`http://localhost:57679/api/v1/Robot`, {
+      var response = await fetch(`${this.baseApiPath}/Robot`, {
         method: "GET",
         headers: {
           Accept: "application/json",
@@ -94,7 +98,7 @@ export default {
       var order = this.getRobot(id);
       console.log("Update Order");
       console.log(JSON.stringify(order));
-      await fetch(`http://localhost:57679/api/v1/Robot/${id}`, {
+      await fetch(`${this.baseApiPath}/Robot/${id}`, {
         method: "PUT",
         headers: {
           Accept: "application/json",
@@ -105,7 +109,7 @@ export default {
     },
 
     async onNew(item) {
-      var response = await fetch(`http://localhost:57679/api/v1/Robot`, {
+      var response = await fetch(`${this.baseApiPath}/Robot`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -120,7 +124,7 @@ export default {
     },
 
     async onDelete(id) {
-      await fetch(`http://localhost:57679/api/v1/Robot/${id}`, {
+      await fetch(`${this.baseApiPath}/Robot/${id}`, {
         method: "DELETE",
         headers: {
           Accept: "application/json",
