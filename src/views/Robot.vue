@@ -11,7 +11,6 @@
 </template>
 
 <script>
-import config from "../appsettings.json";
 import CrudTable from '@/components/CrudTable.vue';
 
 export default {
@@ -19,7 +18,7 @@ export default {
     CrudTable
   },
   data: () => ({
-    baseApiPath: "http://localhost:57679/api/v1",
+    baseApiPath: import.meta.env.VITE_API_URL,
     headers: [
       {
         title: 'Robot',
@@ -44,7 +43,6 @@ export default {
   }),
 
   async created() {
-    this.baseApiPath = `http://${config.backend.host}:${config.backend.port}/api/${config.backend.version}`;
     console.log(`Api Path: ${this.baseApiPath}`);
     this.robots = await this.onInit();
   },
