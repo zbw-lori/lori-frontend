@@ -3,8 +3,7 @@
     <div class="text-h3 font-weight-bold text-white mb-5">Robots</div>
     <v-container style="margin: 0px">
       <v-row justify="start">
-        <CrudTable title="Robot" :headers="headers" :defaultItem="defaultRobot" v-model:dataItems="robots" @onNew="onNew"
-          @onUpdate="onUpdate" @onDelete="onDelete" />
+        <CrudTable title="Robot" :headers="headers" :defaultItem="defaultItem" :apiPath="apiPath" />
       </v-row>
     </v-container>
   </div>
@@ -18,7 +17,7 @@ export default {
     CrudTable
   },
   data: () => ({
-    baseApiPath: import.meta.env.VITE_API_URL,
+    apiPath: `${import.meta.env.VITE_API_URL}/Robot`,
     headers: [
       {
         title: 'Robot',
@@ -32,79 +31,13 @@ export default {
       // { title: 'Available', key: 'isAvailable' },
       { title: 'Actions', key: 'actions', sortable: false },
     ],
-    defaultRobot: {
+    defaultItem: {
       id: 0,
       name: "",
       description: "",
       model: "",
       isAvailable: false,
     },
-    robots: [],
   }),
-
-  async created() {
-    console.log(`Api Path: ${this.baseApiPath}`);
-    this.robots = await this.onInit();
-  },
-
-  methods: {
-    getRobot(id) {
-      return this.robots.find(order => order.id == id);
-    },
-
-    async onInit() {
-      console.log("init robots....")
-      var response = await fetch(`${this.baseApiPath}/Robot`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
-
-      var json = await response.json();
-      console.log(json);
-      return json;
-    },
-
-    async onUpdate(id) {
-      var order = this.getRobot(id);
-      console.log("Update Order");
-      console.log(JSON.stringify(order));
-      await fetch(`${this.baseApiPath}/Robot/${id}`, {
-        method: "PUT",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(order)
-      });
-    },
-
-    async onNew(item) {
-      var response = await fetch(`${this.baseApiPath}/Robot`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(item)
-      });
-
-      var json = await response.json();
-      console.log(json);
-      this.robots.push(json);
-    },
-
-    async onDelete(id) {
-      await fetch(`${this.baseApiPath}/Robot/${id}`, {
-        method: "DELETE",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
-    }
-  }
 }
 </script>

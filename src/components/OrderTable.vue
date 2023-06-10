@@ -1,6 +1,5 @@
 <template>
-  <CrudTable title="Order" :headers="headers" :defaultItem="defaultOrder" v-model:dataItems="orders" @onNew="onNew"
-    @onUpdate="onUpdate" @onDelete="onDelete" />
+  <CrudTable title="Order" :headers="headers" :defaultItem="defaultItem" :apiPath="apiPath" />
 </template>
 
 <script>
@@ -11,7 +10,7 @@ export default {
     CrudTable
   },
   data: () => ({
-    baseApiPath: import.meta.env.VITE_API_URL,
+    apiPath: `${import.meta.env.VITE_API_URL}/Order`,
     headers: [
       {
         title: 'Id',
@@ -27,7 +26,7 @@ export default {
       { title: 'CustomerId', key: 'customerId' },
       { title: 'Actions', key: 'actions', sortable: false },
     ],
-    defaultOrder: {
+    defaultItem: {
       id: 0,
       status: "",
       priority: "",
@@ -36,72 +35,6 @@ export default {
       receiptType: "auto",
       customerId: 0,
     },
-    orders: [],
   }),
-
-  async created() {
-    console.log(`Api Path: ${this.baseApiPath}`);
-    this.orders = await this.onInit();
-  },
-
-  methods: {
-    getCustomer(id) {
-      return this.orders.find(order => order.id == id);
-    },
-
-    async onInit() {
-      console.log("init orders....")
-      var response = await fetch(`${this.baseApiPath}/Order`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
-
-      var json = await response.json();
-      console.log(json);
-      return json;
-    },
-
-    async onUpdate(id) {
-      var customer = this.getCustomer(id);
-      console.log("Update Order");
-      console.log(JSON.stringify(customer));
-      await fetch(`${this.baseApiPath}/Order/${id}`, {
-        method: "PUT",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(customer)
-      });
-    },
-
-    async onNew(item) {
-      var response = await fetch(`${this.baseApiPath}/Order`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(item)
-      });
-
-      var json = await response.json();
-      console.log(json);
-      this.orders.push(json);
-    },
-
-    async onDelete(id) {
-      await fetch(`${this.baseApiPath}/Order/${id}`, {
-        method: "DELETE",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
-    }
-  }
 }
 </script>

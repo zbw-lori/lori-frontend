@@ -42,10 +42,8 @@ export default {
     title: String,
     headers: Array,
     defaultItem: Object,
-    dataItems: Array,
+    apiPath: String,
   },
-
-  emit: ['update:dataItems', 'onUpdate', 'onNew', 'onDelete'],
 
   data: () => ({
     dialog: false,
@@ -54,18 +52,8 @@ export default {
     totalItems: 0,
     editedIndex: -1,
     editedItem: null,
+    items: [],
   }),
-
-  computed: {
-    items: {
-      get() {
-        return this.dataItems;
-      },
-      set(value) {
-        this.$emit('update:dataItems', value);
-      },
-    }
-  },
 
   watch: {
     dialog(val) {
@@ -76,8 +64,9 @@ export default {
     },
   },
 
-  created() {
+  async created() {
     this.editedItem = Object.assign({}, this.defaultItem)
+    await this.callInit();
   },
 
   methods: {
@@ -96,7 +85,7 @@ export default {
     deleteItemConfirm() {
       const newItem = toRaw(this.editedItem)
       this.items.splice(this.editedIndex, 1)
-      this.$emit('onDelete', newItem.id)
+      this.callDelete(newItem)
       this.closeDelete()
     },
 
@@ -116,15 +105,72 @@ export default {
       })
     },
 
-    save() {
+    async save() {
       const newItem = toRaw(this.editedItem)
       if (this.editedIndex > -1) {
         Object.assign(this.items[this.editedIndex], newItem)
-        this.$emit('onUpdate', newItem.id)
+        this.callUpdate(newItem)
       } else {
-        this.$emit('onNew', newItem)
+        this.callInsert(newItem)
       }
       this.close()
+    },
+
+    async callInit() {
+      console.log(`Init Items -> ${this.apiPath}`);
+      var response = await fetch(`${this.apiPath}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+
+      var json = await response.json();
+      console.log(json);
+      this.items = json;
+      console.log(this.items)
+    },
+
+    async callUpdate(item) {
+      console.log("Update Item");
+      console.log(JSON.stringify(item));
+
+      await fetch(`${this.apiPath}/${item.id}`, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(item)
+      });
+    },
+
+    async callInsert(item) {
+      console.log("Insert Item");
+      var response = await fetch(`${this.apiPath}`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(item)
+      });
+
+      var json = await response.json();
+      console.log(json);
+      this.items.push(json);
+    },
+
+    async callDelete(item) {
+      console.log("Delete Item");
+      await fetch(`${this.apiPath}/${item.id}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
     },
   },
 }
