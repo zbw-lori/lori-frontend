@@ -14,7 +14,7 @@
         <v-container>
           <v-row>
             <v-col cols="12" sm="6" md="4" v-for="(itemKey, index) in Object.keys(item)" :key="index">
-              <v-text-field v-model="item[itemKey]" :label="itemKey"></v-text-field>
+              <v-text-field v-model="item[itemKey]" :label="itemKey" :disabled="itemKey === 'id'"></v-text-field>
             </v-col>
           </v-row>
         </v-container>
