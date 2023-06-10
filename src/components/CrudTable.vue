@@ -3,7 +3,7 @@
     :sort-by="[{ key: 'id', order: 'asc' }]" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>CRUD</v-toolbar-title>
+        <v-toolbar-title>{{ title }}</v-toolbar-title>
         <v-spacer></v-spacer>
         <EditDialog v-model:item-object="editedItem" v-model:showDialog="dialog" @onSave="save" @onCancel="close" />
         <v-dialog v-model="dialogDelete" max-width="500px">
@@ -39,6 +39,7 @@ export default {
   },
 
   props: {
+    title: String,
     headers: Array,
     defaultItem: Object,
     dataItems: Array,

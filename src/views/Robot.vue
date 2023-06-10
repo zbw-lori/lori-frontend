@@ -3,7 +3,7 @@
     <div class="text-h3 font-weight-bold text-white mb-5">Robots</div>
     <v-container style="margin: 0px">
       <v-row justify="start">
-        <CrudTable :headers="headers" :defaultItem="defaultRobot" v-model:dataItems="robots" @onNew="onNew"
+        <CrudTable title="Robot" :headers="headers" :defaultItem="defaultRobot" v-model:dataItems="robots" @onNew="onNew"
           @onUpdate="onUpdate" @onDelete="onDelete" />
       </v-row>
     </v-container>
