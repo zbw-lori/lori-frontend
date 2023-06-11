@@ -13,7 +13,7 @@ export default {
     apiPath: `${import.meta.env.VITE_API_URL}/Robot`,
     headers: [
       {
-        title: 'Robot',
+        title: 'Id',
         align: 'start',
         sortable: false,
         key: 'id',
