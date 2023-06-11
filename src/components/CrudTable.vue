@@ -136,6 +136,9 @@ export default {
       console.log("Update Item");
       console.log(JSON.stringify(item));
 
+      if (!item.id) { //hack for orderItem
+        item.id = item.orderId;
+      }
       await fetch(`${this.apiPath}/${item.id}`, {
         method: "PUT",
         headers: {
@@ -164,6 +167,9 @@ export default {
 
     async callDelete(item) {
       console.log("Delete Item");
+      if (!item.id) { //hack for orderItem
+        item.id = item.orderId;
+      }
       await fetch(`${this.apiPath}/${item.id}`, {
         method: "DELETE",
         headers: {

@@ -14,6 +14,9 @@
       <v-row>
         <ItemTable class="mt-2" />
       </v-row>
+      <v-row>
+        <OrderItemTable class="mt-2" />
+      </v-row>
     </v-container>
   </div>
 </template>
@@ -23,6 +26,7 @@ import OrderTable from '@/components/OrderTable.vue';
 import CustomerTable from '@/components/CustomerTable.vue';
 import AddressTable from '@/components/AddressTable.vue';
 import ItemTable from '@/components/ItemTable.vue';
+import OrderItemTable from '@/components/OrderItemTable.vue';
 
 export default {
   components: {
@@ -30,6 +34,7 @@ export default {
     CustomerTable,
     AddressTable,
     ItemTable,
+    OrderItemTable,
   },
 }
 </script>
