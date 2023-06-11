@@ -55,6 +55,7 @@ export default {
       console.log(json)
       if (response.status == 200) {
         localStorage.setItem("jwt", json);
+        localStorage.setItem("user", this.username);
         this.$router.push('/dashboard')
       } else {
         this.valid = false
@@ -75,6 +76,7 @@ export default {
         });
 
         if (response.status == 200) {
+          localStorage.setItem("user", response.body);
           this.$router.push('/dashboard')
         }
       }
