@@ -23,6 +23,7 @@
 export default {
   data() {
     return {
+      apiPath: `${import.meta.env.VITE_API_URL}/Auth`,
       email: "",
       password: "",
       valid: false,
@@ -41,7 +42,7 @@ export default {
         "password": this.password
       }
       console.log(user)
-      var response = await fetch("http://localhost:57679/api/v1/Auth/login", {
+      var response = await fetch(`${this.apiPath}/login`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -54,6 +55,7 @@ export default {
       console.log(json)
       if (response.status == 200) {
         localStorage.setItem("jwt", json);
+        localStorage.setItem("user", this.email);
         this.$router.push('/dashboard')
       } else {
         this.valid = false
@@ -65,7 +67,7 @@ export default {
       var token = localStorage.getItem("jwt");
       console.log("Calling getMe()..." + token)
       if (token) {
-        var response = await fetch("http://localhost:57679/api/v1/Auth", {
+        var response = await fetch(`${this.apiPath}`, {
           method: "GET",
           headers: {
             Accept: "application/json",
@@ -74,6 +76,7 @@ export default {
         });
 
         if (response.status == 200) {
+          localStorage.setItem("user", response.body);
           this.$router.push('/dashboard')
         }
       }
@@ -86,7 +89,7 @@ export default {
         "password": this.password
       }
       console.log(user)
-      var response = await fetch("http://localhost:57679/api/v1/Auth/register", {
+      var response = await fetch(`${this.apiPath}/register`, {
         method: "POST",
         headers: {
           Accept: "application/json",
