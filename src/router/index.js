@@ -1,6 +1,14 @@
 // Composables
 import { createRouter, createWebHistory } from 'vue-router'
 
+function isAuthenticated(){
+  return window.localStorage.getItem('jwt');
+}
+
+function isAdmin(){
+  return window.localStorage.getItem('user') === 'admin';
+}
+
 const routes = [
   {
     path: '/',
@@ -65,6 +73,16 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.name !== 'Login' && !isAuthenticated()) {
+    next({ name: 'Login' })
+  } else if (to.name !== 'Status' && isAuthenticated() && !isAdmin()) {
+    next({name: 'Status'})
+  } else {
+    next()
+  }
 })
 
 export default router

@@ -3,9 +3,11 @@
     <v-navigation-drawer color="transparent" floating permanent class="pt-10 pl-10">
       <v-img class="mb-10" width="70" src="@/assets/logo.svg" />
       <v-list density="compact" nav class="pa-0" active-color="primary" variant="flat">
-        <v-list-item v-for="link in links" :key="link.text" :to="link.route" :prepend-icon="link.icon">
-          <v-list-item-title>{{ link.text }}</v-list-item-title>
-        </v-list-item>
+        <template v-for="link in links" :key="link.text">
+          <v-list-item :to="link.route" :prepend-icon="link.icon" v-if="checkPermission(link.onlyAdmin)">
+            <v-list-item-title>{{ link.text }}</v-list-item-title>
+          </v-list-item>
+        </template>
       </v-list>
     </v-navigation-drawer>
 
@@ -20,11 +22,26 @@ export default {
   data() {
     return {
       links: [
-        { icon: 'mdi-view-dashboard', text: 'Dashboard', route: '/dashboard' },
-        { icon: 'mdi-robot', text: 'Robots', route: '/robots' },
-        { icon: 'mdi-file-tree', text: 'Stock Management', route: '/stock' },
-        { icon: 'mdi-account-group', text: 'Customer Status', route: '/status' }
+        { icon: 'mdi-view-dashboard', text: 'Dashboard', route: '/dashboard', onlyAdmin: true },
+        { icon: 'mdi-robot', text: 'Robots', route: '/robots', onlyAdmin: true },
+        { icon: 'mdi-file-tree', text: 'Stock Management', route: '/stock', onlyAdmin: true },
+        { icon: 'mdi-account-group', text: 'Customer Status', route: '/status', onlyAdmin: false }
       ]
+    }
+  },
+
+  computed: {
+    isAdmin() {
+      return window.localStorage.getItem("user") === "admin";
+    }
+  },
+
+  methods: {
+    checkPermission(onlyAdmin) {
+      if (onlyAdmin) {
+        return this.isAdmin;
+      }
+      return !onlyAdmin;
     }
   }
 }
