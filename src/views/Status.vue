@@ -51,18 +51,21 @@ export default {
     async callInit() {
       console.log(`Get status -> ${this.apiPath}`);
       var jwt = localStorage.getItem("jwt");
-      var response = await fetch(`${this.apiPath}`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
-
-      var json = await response.json();
-      console.log(json);
-      this.items = json;
+      try {
+        var response = await fetch(`${this.apiPath}`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+        var json = await response.json();
+        console.log(json);
+        this.items = json;
+      } catch (error) {
+        clearInterval(this.intervalId);
+      }
     },
   }
 }
