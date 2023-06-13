@@ -14,6 +14,9 @@
             <th class="text-left">
               Receipt Type
             </th>
+            <th class="text-left">
+              Action
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -21,6 +24,9 @@
             <td>{{ item.id }}</td>
             <td>{{ item.status }}</td>
             <td>{{ item.receiptType }}</td>
+            <td v-if="item.receiptType === 'Manual'">
+              <v-btn color="primary" @click="confirmOrder(item.id)">Confirm</v-btn>
+            </td>
           </tr>
         </tbody>
       </v-table>
@@ -31,7 +37,8 @@
 <script>
 export default {
   data: () => ({
-    apiPath: `${import.meta.env.VITE_API_URL}/Order/status`,
+    statusApiPath: `${import.meta.env.VITE_API_URL}/Order/status`,
+    confirmApiPath: `${import.meta.env.VITE_API_URL}/Mqtt/confirm`,
     items: [],
     intervalId: 0,
   }),
@@ -49,10 +56,10 @@ export default {
 
   methods: {
     async callInit() {
-      console.log(`Get status -> ${this.apiPath}`);
+      console.log(`Get status -> ${this.statusApiPath}`);
       var jwt = localStorage.getItem("jwt");
       try {
-        var response = await fetch(`${this.apiPath}`, {
+        var response = await fetch(`${this.statusApiPath}`, {
           method: "GET",
           headers: {
             Accept: "application/json",
@@ -66,6 +73,18 @@ export default {
       } catch (error) {
         clearInterval(this.intervalId);
       }
+    },
+
+    async confirmOrder(id) {
+      console.log(`Confirm order -> ${this.confirmApiPath}/${id}`);
+      await fetch(`${this.confirmApiPath}/${id}`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(id),
+      });
     },
   }
 }
