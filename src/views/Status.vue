@@ -33,10 +33,18 @@ export default {
   data: () => ({
     apiPath: `${import.meta.env.VITE_API_URL}/Order/status`,
     items: [],
+    intervalId: 0,
   }),
 
   async created() {
-    await this.callInit();
+    this.intervalId = setInterval(async () => {
+      await this.callInit();
+    }, 1000);
+  },
+
+  beforeUnmount() {
+    console.log("Unmount: Clear interval!");
+    clearInterval(this.intervalId);
   },
 
   methods: {
