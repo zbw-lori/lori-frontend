@@ -46,14 +46,13 @@ export default {
     },
 
     async callApi(subpath) {
-      var api = `${this.apiPath}${subpath}`;
+      var api = `${this.apiPath}${subpath}?package=${this.packageNumber}`;
       console.log(`Call api ${api}`);
       await fetch(`${api}`, {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          body: JSON.stringify(this.packageNumber),
         },
       });
     },
