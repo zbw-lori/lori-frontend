@@ -22,6 +22,7 @@ export default {
         borderWidth: 1,
         borderColor: '#D17077',
         backgroundColor: '#fff',
+        tension: 0.1,
       }]
     },
 
