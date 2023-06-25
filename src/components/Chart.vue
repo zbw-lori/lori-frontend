@@ -45,9 +45,11 @@ export default {
     updateData() {
       console.log(`update data`)
       console.log(this.chart)
-      this.chart.data.labels.push("blue");
       var len = this.chart.data.datasets[0].data.length;
-      this.chart.data.datasets[0].data[len] = 11;
+      var pervious = this.chart.data.datasets[0].data[len - 1];
+      var percentage = pervious < 3.60 ? (pervious < 3.55 ? (pervious < 3.5 ? '20%' : '40%') : '60%') : '80%';
+      this.chart.data.labels.push(percentage);
+      this.chart.data.datasets[0].data[len] = pervious - 0.005;
       this.chart.update();
     }
   },

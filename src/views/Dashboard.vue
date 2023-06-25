@@ -15,10 +15,10 @@ export default {
 
   data: () => ({
     chartData: {
-      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      labels: ['100%', '100%', '100%', '100%', '90%', '90%', '90%', '90%', '90%', '90%', '80%', '80%', '80%', '80%', '80%', '80%', '80%', '80%', '80%', '80%'],
       datasets: [{
-        label: 'Capacity',
-        data: [12, 19, 3, 5, 2, 3],
+        label: 'Battery',
+        data: [4.35, 4.25, 4.0, 3.95, 3.85, 3.82, 3.80, 3.77, 3.75, 3.75, 3.75, 3.75, 3.72, 3.70, 3.68, 3.66, 3.65, 3.65, 3.65, 3.65],
         borderWidth: 1,
         borderColor: '#D17077',
         backgroundColor: '#fff',
