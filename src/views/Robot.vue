@@ -11,6 +11,9 @@
       <v-row>
         <FetchActions />
       </v-row>
+      <v-row>
+        <DriveActions />
+      </v-row>
     </v-container>
   </div>
 </template>
@@ -19,12 +22,14 @@
 import RobotTable from '@/components/RobotTable.vue';
 import RouteTable from '@/components/RouteTable.vue';
 import FetchActions from '@/components/FetchActions.vue';
+import DriveActions from '@/components/DriveActions.vue';
 
 export default {
   components: {
     RobotTable,
     RouteTable,
     FetchActions,
+    DriveActions,
   },
 }
 </script>
